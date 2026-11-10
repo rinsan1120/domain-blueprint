@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <title>__TITLE__</title>
@@ -31,16 +31,16 @@
       <div class="group" id="views"></div>
       <div class="group graph-controls" id="graph-controls" hidden>
         <span class="graph-title" id="graph-title"></span>
-        <label class="graph-search-label" for="graph-search">Search</label>
-        <input id="graph-search" type="search" placeholder="label" />
-        <button id="graph-fit">fit</button>
+        <label class="graph-search-label" for="graph-search">検索</label>
+        <input id="graph-search" type="search" placeholder="画面・API・データ名" />
+        <button id="graph-fit">全体表示</button>
         <label class="legend" id="graph-legend"></label>
       </div>
       <div class="group image-controls" id="image-controls">
-        <button id="zoom-out">−</button>
+        <button id="zoom-out" aria-label="縮小" title="縮小">−</button>
         <span id="zoom-value">-</span>
-        <button id="zoom-in">＋</button>
-        <button id="zoom-fit">fit</button>
+        <button id="zoom-in" aria-label="拡大" title="拡大">＋</button>
+        <button id="zoom-fit">全体表示</button>
       </div>
     </header>
     <main id="main">
@@ -173,14 +173,14 @@
 
       const renderLegend = (legend) => {
         graphLegend.innerHTML = [
-          `<span><span class="swatch" style="background:${legend.edge.write}"></span>write</span>`,
-          `<span><span class="swatch" style="background:${legend.edge.read}"></span>read</span>`,
-          `<span><span class="swatch" style="background:${legend.edge.both}"></span>write+read</span>`,
+          `<span><span class="swatch" style="background:${legend.edge.write}"></span>書き込み</span>`,
+          `<span><span class="swatch" style="background:${legend.edge.read}"></span>読み込み</span>`,
+          `<span><span class="swatch" style="background:${legend.edge.both}"></span>読み書き</span>`,
         ].join("");
       };
 
       const showGraph = async (src) => {
-        if (typeof vis === "undefined") { graphEl.textContent = "failed to load vis-network"; return; }
+        if (typeof vis === "undefined") { graphEl.textContent = "関連グラフの表示に失敗しました"; return; }
         const data = await (await fetch(src + "?v=" + Date.now())).json();
         const nodes = new vis.DataSet(data.nodes.map((n) => ({ ...n })));
         const edges = new vis.DataSet(data.edges.map((e) => ({ ...e, baseColor: e.color })));
