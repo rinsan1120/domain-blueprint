@@ -35,6 +35,6 @@ test("apiMapD2 links screens to endpoints and endpoints to entities", () => {
   const out = apiMapD2(model);
   assert.match(out, /S01 -> tasks_patch: "save"/);
   assert.match(out, /tasks_patch -> tasks/);
-  assert.match(out, /S01 -> tasks_list: "reference"/);
-  assert.match(out, /S01 -> html_tasks: "initial"/);
+  assert.match(out, /S01 -> tasks_list: "参照"/);
+  assert.match(out, /S01 -> html_tasks: "初期表示"/);
 });
