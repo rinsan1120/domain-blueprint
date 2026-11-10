@@ -13,15 +13,15 @@ export type I18n = {
 };
 
 export const DEFAULT_I18N: I18n = {
-  legend: "Legend",
-  initial: "initial",
-  reference: "reference",
-  unused: "unused",
-  entity: "entity",
-  unusedTitle: "Unused endpoints",
-  referenceLegend: "logical reference (not called)",
-  unusedLegend: "unused",
-  entityLegend: "entity (domain)",
+  legend: "凡例",
+  initial: "初期表示",
+  reference: "参照",
+  unused: "未使用",
+  entity: "データ",
+  unusedTitle: "未使用のエンドポイント",
+  referenceLegend: "論理的な参照（呼び出しなし）",
+  unusedLegend: "未使用",
+  entityLegend: "データ（ドメイン）",
 };
 
 export function tableName(key: string, entity: { table?: string }): string {
@@ -48,11 +48,12 @@ function tableD2(model: Model, typeOf: (domain: string) => string): string {
       return `${tableName(key, entity)}: {\n  shape: sql_table\n${cols}\n}`;
     })
     .join("\n\n");
+  const relationKindLabels: Record<string, string> = { "one-to-one": "1対1", "one-to-many": "1対多", "many-to-one": "多対1", "many-to-many": "多対多" };
   const rels = (model.relations ?? [])
     .map((r) => {
       const from = tableName(r.from, model.entities[r.from] ?? { attributes: {} });
       const to = tableName(r.to, model.entities[r.to] ?? { attributes: {} });
-      return `${from} -> ${to}: ${[r.on, r.kind].filter(Boolean).join(" ")}`;
+      return `${from} -> ${to}: ${[r.on, relationKindLabels[r.kind] ?? r.kind].filter(Boolean).join(" ")}`;
     })
     .join("\n");
   return rels ? `${tables}\n\n${rels}\n` : `${tables}\n`;
@@ -138,7 +139,7 @@ function legendD2(model: Model, used: Set<string>, i18n: I18n): string {
   const usedKinds = new Set(entries.filter(([id]) => used.has(id)).map(([, op]) => op.kind));
   const items: string[][] = [];
   if (usedKinds.has("api")) items.push(legendEntry("legend_api", "API", "parallelogram", [`style.fill: "${API_FILL.api}"`]));
-  if (usedKinds.has("html")) items.push(legendEntry("legend_html", "HTML UI", "parallelogram", [`style.fill: "${API_FILL.html}"`]));
+  if (usedKinds.has("html")) items.push(legendEntry("legend_html", "HTML画面", "parallelogram", [`style.fill: "${API_FILL.html}"`]));
   if (entries.some(([id]) => !used.has(id))) {
     items.push(legendEntry("legend_unused", i18n.unusedLegend, "parallelogram", [`style.fill: "${UNUSED_FILL}"`]));
   }
