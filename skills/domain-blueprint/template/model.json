@@ -1,60 +1,201 @@
 {
   "domains": {
-    "string": { "kind": "primitive" },
-    "boolean": { "kind": "primitive" },
-    "number": { "kind": "primitive" },
-    "datetime": { "kind": "primitive" },
-    "status": { "kind": "state", "logical": "string", "values": ["todo", "done"] }
+    "string": {
+      "kind": "primitive"
+    },
+    "boolean": {
+      "kind": "primitive"
+    },
+    "number": {
+      "kind": "primitive"
+    },
+    "datetime": {
+      "kind": "primitive"
+    },
+    "status": {
+      "kind": "state",
+      "logical": "string",
+      "values": [
+        "未着手",
+        "完了"
+      ]
+    }
   },
   "entities": {
     "tasks": {
-      "description": "A task with a completion status.",
+      "description": "進捗状態を持つタスク。",
       "attributes": {
-        "id": { "domain": "string", "pk": true },
-        "title": { "domain": "string" },
-        "status": { "domain": "status" },
-        "created_at": { "domain": "datetime" }
+        "id": {
+          "domain": "string",
+          "pk": true
+        },
+        "title": {
+          "domain": "string"
+        },
+        "status": {
+          "domain": "status"
+        },
+        "created_at": {
+          "domain": "datetime"
+        }
       },
-      "transitions": [{ "on": "complete", "domain": "status", "from": "todo", "to": "done" }]
+      "transitions": [
+        {
+          "on": "完了する",
+          "domain": "status",
+          "from": "未着手",
+          "to": "完了"
+        }
+      ]
     },
     "notes": {
-      "description": "A note attached to a task.",
+      "description": "タスクに紐づくメモ。",
       "attributes": {
-        "id": { "domain": "string", "pk": true },
-        "body": { "domain": "string" }
+        "id": {
+          "domain": "string",
+          "pk": true
+        },
+        "body": {
+          "domain": "string"
+        }
       }
     }
   },
-  "relations": [{ "from": "tasks", "to": "notes", "kind": "one-to-many", "on": "has" }],
+  "relations": [
+    {
+      "from": "tasks",
+      "to": "notes",
+      "kind": "one-to-many",
+      "on": "持つ"
+    }
+  ],
   "flows": {
     "task_management": {
-      "name": "Manage tasks",
+      "name": "タスク管理",
       "actor": "user",
       "steps": [
-        { "name": "Create a task", "entity": "tasks", "changes": { "status": "todo" } },
-        { "name": "Complete it", "entity": "tasks", "changes": { "status": "done" } }
+        {
+          "name": "タスクを作成",
+          "entity": "tasks",
+          "changes": {
+            "status": "未着手"
+          }
+        },
+        {
+          "name": "タスクを完了",
+          "entity": "tasks",
+          "changes": {
+            "status": "完了"
+          }
+        }
       ]
     }
   },
   "screens": {
-    "S01": { "name": "Task list", "entities": ["tasks"], "onLoad": "html_tasks_page" },
-    "S02": { "name": "Task detail", "entities": ["tasks"], "references": ["tasks_list"] },
-    "S03": { "name": "Notes", "entities": ["notes"], "onLoad": "html_notes_page" }
+    "S01": {
+      "name": "タスク一覧",
+      "entities": [
+        "tasks"
+      ],
+      "onLoad": "html_tasks_page"
+    },
+    "S02": {
+      "name": "タスク詳細",
+      "entities": [
+        "tasks"
+      ],
+      "references": [
+        "tasks_list"
+      ]
+    },
+    "S03": {
+      "name": "メモ一覧",
+      "entities": [
+        "notes"
+      ],
+      "onLoad": "html_notes_page"
+    }
   },
   "navigation": [
-    { "from": "S01", "on": "open task", "to": "S02", "call": "html_tasks_update" },
-    { "from": "S02", "on": "back", "to": "S01" },
-    { "from": "S01", "on": "open notes", "to": "S03" }
+    {
+      "from": "S01",
+      "on": "タスクを開く",
+      "to": "S02",
+      "call": "html_tasks_update"
+    },
+    {
+      "from": "S02",
+      "on": "戻る",
+      "to": "S01"
+    },
+    {
+      "from": "S01",
+      "on": "メモを開く",
+      "to": "S03"
+    }
   ],
   "screenCalls": [
-    { "screen": "S01", "trigger": "GET", "view": "S01", "gateway": "task-list", "api": "tasks_list" },
-    { "screen": "S02", "trigger": "POST", "view": "S02", "gateway": "task-detail", "api": "tasks_patch" }
+    {
+      "screen": "S01",
+      "trigger": "GET",
+      "view": "S01",
+      "gateway": "task-list",
+      "api": "tasks_list"
+    },
+    {
+      "screen": "S02",
+      "trigger": "POST",
+      "view": "S02",
+      "gateway": "task-detail",
+      "api": "tasks_patch"
+    }
   ],
   "api": {
-    "tasks_list": { "kind": "api", "method": "GET", "path": "/api/tasks", "operation": "list", "entity": "tasks", "success": 200 },
-    "tasks_patch": { "kind": "api", "method": "PATCH", "path": "/api/tasks/{id}", "operation": "patch", "entity": "tasks", "success": 200, "errors": [{ "status": 404, "code": "NOT_FOUND" }] },
-    "html_tasks_page": { "kind": "html", "method": "GET", "path": "/tasks", "operation": "load", "entity": "tasks", "success": 200 },
-    "html_tasks_update": { "kind": "html", "method": "POST", "path": "/tasks/{id}", "operation": "update", "entity": "tasks", "success": 200 },
-    "html_notes_page": { "kind": "html", "method": "GET", "path": "/notes", "operation": "load", "entity": "notes", "success": 200 }
+    "tasks_list": {
+      "kind": "api",
+      "method": "GET",
+      "path": "/api/tasks",
+      "operation": "list",
+      "entity": "tasks",
+      "success": 200
+    },
+    "tasks_patch": {
+      "kind": "api",
+      "method": "PATCH",
+      "path": "/api/tasks/{id}",
+      "operation": "patch",
+      "entity": "tasks",
+      "success": 200,
+      "errors": [
+        {
+          "status": 404,
+          "code": "NOT_FOUND"
+        }
+      ]
+    },
+    "html_tasks_page": {
+      "kind": "html",
+      "method": "GET",
+      "path": "/tasks",
+      "operation": "load",
+      "entity": "tasks",
+      "success": 200
+    },
+    "html_tasks_update": {
+      "kind": "html",
+      "method": "POST",
+      "path": "/tasks/{id}",
+      "operation": "update",
+      "entity": "tasks",
+      "success": 200
+    },
+    "html_notes_page": {
+      "kind": "html",
+      "method": "GET",
+      "path": "/notes",
+      "operation": "load",
+      "entity": "notes",
+      "success": 200
+    }
   }
 }
