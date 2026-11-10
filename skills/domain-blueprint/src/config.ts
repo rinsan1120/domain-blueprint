@@ -24,18 +24,18 @@ export type BlueprintConfig = {
 export type ResolvedConfig = BlueprintConfig & { configDir: string; configPath: string };
 
 const DEFAULT_VIEWS: View[] = [
-  { key: "logical", label: "Logical ER", kind: "logical" },
-  { key: "physical", label: "Physical ER", kind: "physical", layout: "dagre" },
-  { key: "flow", label: "Flow", kind: "flow" },
-  { key: "nav", label: "Screens", kind: "nav" },
-  { key: "api", label: "API", kind: "api", layout: "elk" },
+  { key: "logical", label: "論理ER図", kind: "logical" },
+  { key: "physical", label: "物理ER図", kind: "physical", layout: "dagre" },
+  { key: "flow", label: "業務フロー", kind: "flow" },
+  { key: "nav", label: "画面遷移図", kind: "nav" },
+  { key: "api", label: "API連携図", kind: "api", layout: "elk" },
 ];
 
 export function loadConfig(configPath: string): ResolvedConfig {
   const absolute = resolve(configPath);
   const raw = JSON.parse(readFileSync(absolute, "utf8")) as Partial<BlueprintConfig>;
   return {
-    title: raw.title ?? "domain blueprint",
+    title: raw.title ?? "設計図",
     model: raw.model ?? "domain-model.json",
     schema: raw.schema ?? "domain-model.schema.json",
     outDir: raw.outDir ?? "generated",
