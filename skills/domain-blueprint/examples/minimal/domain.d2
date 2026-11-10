@@ -2,24 +2,24 @@ direction: right
 
 # A hand-written concept diagram: the domain's concepts and relationships,
 # not the database tables (that is the logical/physical ER views).
-heading: "Task management — domain concepts" {
+heading: "タスク管理 — 概念図" {
   shape: text
   style.font-size: 22
 }
 
-task: "Task\n(aggregate root)" {
+task: "タスク\n(集約ルート)" {
   style.fill: "#e8f0ff"
 }
-note: "Note\n(entity)" {
+note: "メモ\n(エンティティ)" {
   style.fill: "#e8f0ff"
 }
-status: "Status\n(value object)\ntodo | done" {
+status: "状態\n(値オブジェクト)\n未着手 | 完了" {
   style.fill: "#fdf3e3"
 }
-task_title: "Title\n(value object)" {
+task_title: "タイトル\n(値オブジェクト)" {
   style.fill: "#fdf3e3"
 }
 
-task -> note: "has many"
-task -> status: "has"
+task -> note: "複数のメモを持つ"
+task -> status: "持つ"
 task -> task_title: "has"
