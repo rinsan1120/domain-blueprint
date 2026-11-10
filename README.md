@@ -53,7 +53,7 @@ ready-to-paste prompt.
 
 ```bash
 cd skills/domain-blueprint
-npm install            # or: bun install
+npm install --ignore-scripts  # or: bun install
 node src/cli.ts build --config examples/minimal/domain-blueprint.config.json
 node src/cli.ts serve --config examples/minimal/domain-blueprint.config.json
 # open the printed URL
@@ -63,6 +63,12 @@ node src/cli.ts serve --config examples/minimal/domain-blueprint.config.json
 [d2](https://d2lang.com) (must be on PATH), patches the SVGs, writes the interactive graph JSON,
 and writes `viewer.html`.
 Node.js >= 22.6 strips TypeScript types; on 22.6–23.5 add `--experimental-strip-types`.
+
+## Local security notes
+
+- The viewer server listens on `127.0.0.1` only; it is not intended for LAN access.
+- `skills/domain-blueprint/.npmrc` disables npm lifecycle scripts during dependency installation by default. The example also passes `--ignore-scripts` explicitly.
+- Treat project config files as executable input: `extractors` run shell commands and `adapters` load code. Use only configs and adapters you trust.
 
 ## Layout
 

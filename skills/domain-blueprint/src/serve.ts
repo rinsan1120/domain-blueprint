@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { extname, join, normalize, resolve } from "node:path";
+import { extname, isAbsolute, join, normalize, relative, resolve, sep } from "node:path";
 
 const CONTENT_TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -21,7 +21,8 @@ export function serveDir(dir: string, port: number): Promise<Served> {
         const pathname = decodeURIComponent(url.pathname);
         const relative = pathname === "/" ? "/viewer.html" : pathname;
         const filePath = normalize(join(root, relative));
-        if (filePath !== root && !filePath.startsWith(root + "/")) {
+        const pathFromRoot = relative(root, filePath);
+        if (pathFromRoot === ".." || pathFromRoot.startsWith(`..${sep}`) || isAbsolute(pathFromRoot)) {
           res.writeHead(403);
           res.end("Forbidden");
           return;
@@ -36,6 +37,10 @@ export function serveDir(dir: string, port: number): Promise<Served> {
     })();
   });
   return new Promise((resolvePromise) => {
-    server.listen(port, () => resolvePromise({ url: `http://localhost:${port}/viewer.html`, close: () => server.close() }));
+    server.listen(port, "127.0.0.1", () => {
+      const address = server.address();
+      const boundPort = address && typeof address !== "string" ? address.port : port;
+      resolvePromise({ url: `http://127.0.0.1:${boundPort}/viewer.html`, close: () => server.close() });
+    });
   });
 }
