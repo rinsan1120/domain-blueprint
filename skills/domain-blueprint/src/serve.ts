@@ -19,8 +19,8 @@ export function serveDir(dir: string, port: number): Promise<Served> {
       try {
         const url = new URL(req.url ?? "/", "http://localhost");
         const pathname = decodeURIComponent(url.pathname);
-        const relative = pathname === "/" ? "/viewer.html" : pathname;
-        const filePath = normalize(join(root, relative));
+        const requestedPath = pathname === "/" ? "/viewer.html" : pathname;
+        const filePath = normalize(join(root, requestedPath));
         const pathFromRoot = relative(root, filePath);
         if (pathFromRoot === ".." || pathFromRoot.startsWith(`..${sep}`) || isAbsolute(pathFromRoot)) {
           res.writeHead(403);
