@@ -51,7 +51,7 @@ export function graphData(model: Model, decoration: GraphDecoration = {}): Graph
     addNode({ id: `screen:${id}`, label: screens[id]?.name ?? id, group: "client", shape: "box" });
   }
   const serverOnly = api.some(([key]) => !calledApis.has(key));
-  if (serverOnly) addNode({ id: "server", label: "server (non-screen)", group: "client", shape: "box" });
+  if (serverOnly) addNode({ id: "server", label: "サーバー（画面外）", group: "client", shape: "box" });
 
   const addEdge = (edge: GraphEdge): void => {
     if (edges.some((existing) => existing.id === edge.id)) return;
@@ -79,7 +79,7 @@ export function graphData(model: Model, decoration: GraphDecoration = {}): Graph
         to: `entity:${entity}`,
         color: write && read ? BOTH_COLOR : write ? WRITE_COLOR : READ_COLOR,
         dashes: !write && read,
-        title: write && read ? "write+read" : write ? "write" : "read",
+        title: write && read ? "読み書き" : write ? "書き込み" : "読み込み",
       });
     }
   }
